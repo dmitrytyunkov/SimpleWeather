@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple Weather</string>
+    <string name="text_view_city">Omsk</string>
+    <string name="button_metric">C</string>
+    <string name="button_imperial">F</string>
+    <string name="text_view_grad">o</string>
+    <string name="text_view_change_city">Change city</string>
+    <string name="text_view_my_location">My location</string>
+    <string name="text_view_wind_title">Wind</string>
+    <string name="text_view_pressure_title">Pressure</string>
+    <string name="text_view_wind_value">5 mps, west</string>
+    <string name="text_view_pressure_value">752 mmHg</string>
+    <string name="text_view_humidity_title">Humidity</string>
+    <string name="text_view_chance_of_rain_title">Chance of rain</string>
+    <string name="text_view_humidity_value">60%</string>
+    <string name="text_view_chance_of_rain_value">10%</string>
+    <string name="text_view_temperature">14</string>
+    <string name="text_view_weather">Rain</string>
+</resources>
