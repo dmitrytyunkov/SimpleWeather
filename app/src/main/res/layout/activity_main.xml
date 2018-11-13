@@ -17,23 +17,23 @@
         android:id="@+id/text_view_city"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/text_view_city"
+        android:text="@string/city"
         android:textColor="@color/colorMainText"
         android:textSize="@dimen/text_city_size"
-        app:layout_constraintEnd_toStartOf="@id/text_view_grad"
+        app:layout_constraintEnd_toStartOf="@id/text_view_degree"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/text_view_grad"
+        app:layout_constraintRight_toLeftOf="@id/text_view_degree"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/text_view_grad"
+        android:id="@+id/text_view_degree"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginRight="5dp"
         android:gravity="right|end|center_vertical"
-        android:text="@string/text_view_grad"
+        android:text="@string/degree"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
         app:layout_constraintEnd_toStartOf="@+id/toggle_button_unit"
@@ -48,8 +48,8 @@
         android:text=""
         android:textAllCaps="true"
         android:textColor="@color/colorMainText"
-        android:textOff="@string/button_metric"
-        android:textOn="@string/button_imperial"
+        android:textOff="@string/unit_degree_metric"
+        android:textOn="@string/unit_degree_imperial"
         android:textSize="@dimen/text_button_size"
         app:layout_constraintBottom_toBottomOf="@+id/text_view_city"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:text="@string/text_view_change_city"
+        android:text="@string/change_city"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_view_my_location"
@@ -77,7 +77,7 @@
         android:clickable="true"
         android:focusable="true"
         android:gravity="right|end"
-        android:text="@string/text_view_my_location"
+        android:text="@string/my_location"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,12 +89,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintCircle="@id/layout"
-        tools:layout_editor_absoluteX="15dp"
+        tools:layout_editor_absoluteX="23dp"
         tools:layout_editor_absoluteY="20dp">
 
         <TextView
             android:id="@+id/text_view_temperature"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_view_temperature"
             android:textColor="@color/colorMainText"
@@ -103,21 +103,22 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_view_main_grad"
+            android:id="@+id/text_view_main_degree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_view_grad"
+            android:text="@string/degree"
             android:textColor="@color/colorMainText"
             android:textSize="@dimen/text_city_size"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/text_view_temperature"
             app:layout_constraintTop_toTopOf="@+id/text_view_temperature" />
 
         <TextView
-            android:id="@+id/text_view_weather"
-            android:layout_width="0dp"
+            android:id="@+id/text_view_weather_status"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="@string/text_view_weather"
+            android:text="@string/status_weather"
             android:textColor="@color/colorMainText"
             android:textSize="@dimen/text_main_size"
             app:layout_constraintEnd_toEndOf="parent"
@@ -144,14 +145,14 @@
         android:text="@string/text_view_pressure_value"
         android:textColor="@color/colorMainText"
         android:textSize="@dimen/text_main_size"
-        app:layout_constraintBottom_toTopOf="@+id/text_view_chance_of_rain_title"
-        app:layout_constraintStart_toStartOf="@id/text_view_chance_of_rain_title" />
+        app:layout_constraintBottom_toTopOf="@+id/text_view_chance_of_precipitation_title"
+        app:layout_constraintStart_toStartOf="@id/text_view_chance_of_precipitation_title" />
 
     <TextView
         android:id="@+id/text_view_wind_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/text_view_wind_title"
+        android:text="@string/wind"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_view_pressure_title"
@@ -163,21 +164,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:text="@string/text_view_pressure_title"
+        android:text="@string/pressure"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
         app:layout_constraintBottom_toTopOf="@+id/text_view_pressure_value"
-        app:layout_constraintStart_toStartOf="@id/text_view_chance_of_rain_title" />
+        app:layout_constraintStart_toStartOf="@id/text_view_chance_of_precipitation_title" />
 
     <TextView
         android:id="@+id/text_view_humidity_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/text_view_humidity_title"
+        android:text="@string/humidity"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
-        app:layout_constraintBaseline_toBaselineOf="@+id/text_view_chance_of_rain_title"
-        app:layout_constraintEnd_toStartOf="@id/text_view_chance_of_rain_title"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_view_chance_of_precipitation_title"
+        app:layout_constraintEnd_toStartOf="@id/text_view_chance_of_precipitation_title"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -187,31 +188,31 @@
         android:text="@string/text_view_humidity_value"
         android:textColor="@color/colorMainText"
         android:textSize="@dimen/text_main_size"
-        app:layout_constraintBaseline_toBaselineOf="@+id/text_view_chance_of_rain_value"
-        app:layout_constraintEnd_toStartOf="@id/text_view_chance_of_rain_value"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_view_chance_of_precipitation_value"
+        app:layout_constraintEnd_toStartOf="@id/text_view_chance_of_precipitation_value"
         app:layout_constraintStart_toStartOf="parent" />
 
 
     <TextView
-        android:id="@+id/text_view_chance_of_rain_title"
+        android:id="@+id/text_view_chance_of_precipitation_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:text="@string/text_view_chance_of_rain_title"
+        android:text="@string/chance_of_precipitation"
         android:textColor="@color/colorSecondText"
         android:textSize="@dimen/text_second_size"
-        app:layout_constraintBottom_toTopOf="@+id/text_view_chance_of_rain_value"
+        app:layout_constraintBottom_toTopOf="@+id/text_view_chance_of_precipitation_value"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/text_view_chance_of_rain_value"
+        android:id="@+id/text_view_chance_of_precipitation_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/text_view_chance_of_rain_value"
         android:textColor="@color/colorMainText"
         android:textSize="@dimen/text_main_size"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/text_view_chance_of_rain_title" />
+        app:layout_constraintStart_toStartOf="@id/text_view_chance_of_precipitation_title" />
 
 
 </android.support.constraint.ConstraintLayout>

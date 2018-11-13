@@ -20,14 +20,13 @@ public class WeatherPresenter {
     }
 
     public void checkWeather() {
-        Log.d("CHECK", "checkWeather run");
         // Заменить параметры запроса на переменные
         openweathermapService.getBaseWeatherModel("Omsk,ru", "metric", "ru", "2848389bb79b98268b336c39d6eea8c7").enqueue(new Callback<BaseWeatherModel>() {
             @Override
             public void onResponse(Call<BaseWeatherModel> call, Response<BaseWeatherModel> response) {
-                if (response.body().getCod() != 200) {
-                    Log.d("REQUEST ERROR", response.message());
-                    weatherView.returnWeatherError(response.message());
+                if (response.code() != 200) {
+                    Log.d("REQUEST ERROR", response.code() + ' ' + response.message());
+                    weatherView.returnWeatherError(response.code() + ' ' + response.message());
                 }
                 else {
                     Log.d("REQUEST OK", response.body().toString());
@@ -38,6 +37,7 @@ public class WeatherPresenter {
             @Override
             public void onFailure(Call<BaseWeatherModel> call, Throwable t) {
                 Log.d("ERROR", t.getMessage());
+                weatherView.returnWeatherError(t.getMessage());
             }
         });
     }
