@@ -10,7 +10,7 @@
     android:paddingTop="20dp"
     android:paddingRight="30dp"
     android:paddingBottom="40dp"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
 
     <TextView
