@@ -1,7 +1,9 @@
      package com.dmitrytyunkov.simpleweather.ui;
 
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-     public class MainActivity extends AppCompatActivity implements WeatherView {
+public class MainActivity extends AppCompatActivity implements WeatherView {
 
     @BindView(R.id.text_view_chance_of_precipitation_value)
     TextView textViewChanceOfPrecipitation;
@@ -32,6 +34,8 @@ import butterknife.Unbinder;
     TextView textViewWind;
     @BindView(R.id.text_view_weather_status)
     TextView textViewWeatherStatus;
+    @BindView(R.id.image_view_weather)
+    ImageView imageViewWeather;
     private Unbinder unbinder;
 
     private Double perssureKoef = 0.750062;
@@ -101,6 +105,17 @@ import butterknife.Unbinder;
         textViewTemperature.setText(str);
         str = baseWeatherModel.getWeather().get(0).getDescription();
         textViewWeatherStatus.setText(str);
+
+        NetworkOpenweathermapBuilder.init("https://openweathermap.org/");
+        OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
+        String imgUrl = "/img/w/" + baseWeatherModel.getWeather().get(0).getIcon() + ".png";
+        WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
+        weatherPresenter.downloadImg(imgUrl);
+    }
+
+    @Override
+    public void returnWeatherImg(Bitmap bitmap) {
+        imageViewWeather.setImageBitmap(bitmap);
     }
 
     @Override
