@@ -22,9 +22,9 @@ public class WeatherPresenter {
         this.openweathermapService = openweathermapService;
     }
 
-    public void checkWeather(String unit) {
+    public void checkWeather(String city, String lang, String unit, String appid) {
         // Заменить параметры запроса на переменные
-        openweathermapService.getBaseWeatherModel("Omsk,ru", unit, "ru", "2848389bb79b98268b336c39d6eea8c7").enqueue(new Callback<BaseWeatherModel>() {
+        openweathermapService.getBaseWeatherModel(city, unit, lang, appid).enqueue(new Callback<BaseWeatherModel>() {
             @Override
             public void onResponse(Call<BaseWeatherModel> call, Response<BaseWeatherModel> response) {
                 if (response.code() != 200) {

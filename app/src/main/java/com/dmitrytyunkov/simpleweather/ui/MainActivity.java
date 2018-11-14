@@ -15,6 +15,8 @@ import com.dmitrytyunkov.simpleweather.network.openweathermap.OpenweathermapServ
 import com.dmitrytyunkov.simpleweather.presenter.WeatherPresenter;
 import com.dmitrytyunkov.simpleweather.view.WeatherView;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -42,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
     private Double perssureKoef = 0.750062;
     private String unit = "metric";
+    private String city = "Omsk,RU";
+    private String lang = "en";
+    private String appid = "2848389bb79b98268b336c39d6eea8c7";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +68,14 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         str = getString(R.string.no_value);
         textViewWeatherStatus.setText(str);
 
+        if (Locale.getDefault().getLanguage().equals("ru"))
+            lang = "ru";
+
         NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
         WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-        weatherPresenter.checkWeather(unit);
+        weatherPresenter.checkWeather(city, lang, unit, appid);
     }
 
     @Override
@@ -108,10 +116,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         else if(windDeg < 337.5)
             str += getString(R.string.northwest);
         textViewWind.setText(str);
-        str = baseWeatherModel.getMain().getTemp().toString();
+        str = String.valueOf(Math.round(baseWeatherModel.getMain().getTemp()));
         textViewTemperature.setText(str);
         str = baseWeatherModel.getWeather().get(0).getDescription();
         textViewWeatherStatus.setText(str);
+        /*str = baseWeatherModel.getName();
+        textViewCity.setText(str);*/
 
         NetworkOpenweathermapBuilder.init("https://openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
@@ -139,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
             OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
             WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-            weatherPresenter.checkWeather(unit);
+            weatherPresenter.checkWeather(city, lang, unit, appid);
         }
         else {
             unit = "metric";
@@ -147,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
             OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
             WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-            weatherPresenter.checkWeather(unit);
+            weatherPresenter.checkWeather(city, lang, unit, appid);
         }
     }
 }
