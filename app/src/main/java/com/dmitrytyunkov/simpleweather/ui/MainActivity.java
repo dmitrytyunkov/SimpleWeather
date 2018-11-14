@@ -105,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
     @Override
     public void returnWeather(BaseWeatherModel baseWeatherModel) {
-        String str = baseWeatherModel.getMain().getHumidity().toString() + " "
-                + getString(R.string.percent);
+        String str = String.valueOf(Math.round(baseWeatherModel.getMain().getHumidity()))
+                + " " + getString(R.string.percent);
         textViewHumidity.setText(str);
         str = String.valueOf(Math.round(baseWeatherModel.getMain().getPressure() * perssureKoef))
                 + " " + getString(R.string.unit_pressure);
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         else
             str = baseWeatherModel.getWind().getSpeed().toString() + " "
                     + getString(R.string.unit_speed_imperial) + ", ";
-        Integer windDeg = baseWeatherModel.getWind().getDeg();
+        Double windDeg = baseWeatherModel.getWind().getDeg();
         if (windDeg >= 337.5 || windDeg < 22.5)
             str += getString(R.string.north);
         else if (windDeg < 67.5)
@@ -139,8 +139,9 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         textViewTemperature.setText(str);
         str = baseWeatherModel.getWeather().get(0).getDescription();
         textViewWeatherStatus.setText(str);
-        /*str = baseWeatherModel.getName();
-        textViewCity.setText(str);*/
+        str = baseWeatherModel.getName();
+        textViewCity.setText(str);
+        city = baseWeatherModel.getName() + "," + baseWeatherModel.getSys().getCountry();
 
         NetworkOpenweathermapBuilder.init("https://openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
@@ -159,8 +160,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     public void returnLocation(Location location) {
         Log.d("LOCATION", location.getLongitude() + " "
                 + location.getLatitude());
-        Toast.makeText(this, location.getLongitude() + " "
-                + location.getLatitude(), Toast.LENGTH_SHORT).show();
+        
+        NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
+        OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
+
+        WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
+        weatherPresenter.checkWeather(location.getLongitude(), location.getLatitude(), lang, unit, appid);
     }
 
     @Override
@@ -200,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(permissions, 1);
             }
+            return;
         }
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         CurrentLoccation.getLocation(locationManager, this);

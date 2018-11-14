@@ -23,8 +23,29 @@ public class WeatherPresenter {
     }
 
     public void checkWeather(String city, String lang, String unit, String appid) {
-        // Заменить параметры запроса на переменные
         openweathermapService.getBaseWeatherModel(city, unit, lang, appid).enqueue(new Callback<BaseWeatherModel>() {
+            @Override
+            public void onResponse(Call<BaseWeatherModel> call, Response<BaseWeatherModel> response) {
+                if (response.code() != 200) {
+                    Log.d("REQUEST ERROR", response.code() + ' ' + response.message());
+                    weatherView.returnWeatherError(response.code() + ' ' + response.message());
+                }
+                else {
+                    Log.d("REQUEST OK", response.body().toString());
+                    weatherView.returnWeather(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseWeatherModel> call, Throwable t) {
+                Log.d("REQUEST ERROR", t.getMessage());
+                weatherView.returnWeatherError(t.getMessage());
+            }
+        });
+    }
+
+    public void checkWeather(Double longitude, Double latitude, String lang, String unit, String appid) {
+        openweathermapService.getBaseWeatherModel(longitude, latitude, unit, lang, appid).enqueue(new Callback<BaseWeatherModel>() {
             @Override
             public void onResponse(Call<BaseWeatherModel> call, Response<BaseWeatherModel> response) {
                 if (response.code() != 200) {

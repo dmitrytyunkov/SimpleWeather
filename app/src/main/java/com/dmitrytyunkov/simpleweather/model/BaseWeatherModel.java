@@ -22,7 +22,7 @@ public class BaseWeatherModel {
     private Main main;
     @SerializedName("visibility")
     @Expose
-    private Integer visibility;
+    private Double visibility;
     @SerializedName("wind")
     @Expose
     private Wind wind;
@@ -77,11 +77,11 @@ public class BaseWeatherModel {
         this.main = main;
     }
 
-    public Integer getVisibility() {
+    public Double getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(Integer visibility) {
+    public void setVisibility(Double visibility) {
         this.visibility = visibility;
     }
 

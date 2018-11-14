@@ -16,6 +16,13 @@ public interface OpenweathermapService {
                                                @Query("lang") String lang,
                                                @Query("appid") String appid);
 
+    @GET("/data/2.5/weather")
+    Call<BaseWeatherModel> getBaseWeatherModel(@Query("lon") Double longitude,
+                                               @Query("lat") Double latitude,
+                                               @Query("units") String unit,
+                                               @Query("lang") String lang,
+                                               @Query("appid") String appid);
+
     @GET
     Call<ResponseBody> getWeatherImg(@Url String url);
 }

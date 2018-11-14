@@ -15,7 +15,7 @@ public class Sys {
     private Integer id;
     @SerializedName("message")
     @Expose
-    private Double message;
+    private String message;
     @SerializedName("country")
     @Expose
     private String country;
@@ -42,11 +42,11 @@ public class Sys {
         this.id = id;
     }
 
-    public Double getMessage() {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(Double message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
