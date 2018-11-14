@@ -90,7 +90,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintCircle="@id/layout"
         tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="20dp">
+        tools:layout_editor_absoluteY="20dp"
+        tools:ignore="MissingConstraints">
 
         <ImageView
             android:id="@+id/image_view_weather"
@@ -105,6 +106,8 @@
             android:id="@+id/text_view_temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/text_view_temperature"
             android:textColor="@color/colorMainText"
             android:textSize="@dimen/text_temperature_size"

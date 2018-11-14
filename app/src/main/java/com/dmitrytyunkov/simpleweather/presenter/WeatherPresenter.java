@@ -1,12 +1,21 @@
 package com.dmitrytyunkov.simpleweather.presenter;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.dmitrytyunkov.simpleweather.R;
 import com.dmitrytyunkov.simpleweather.model.BaseWeatherModel;
+import com.dmitrytyunkov.simpleweather.model.City;
 import com.dmitrytyunkov.simpleweather.network.openweathermap.OpenweathermapService;
 import com.dmitrytyunkov.simpleweather.view.WeatherView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -83,5 +92,21 @@ public class WeatherPresenter {
 
             }
         });
+    }
+
+    public City[] readCities(Resources resources) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resources.openRawResource(R.raw.city_list)));
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            for (String line; (line = bufferedReader.readLine()) != null; ) {
+                stringBuilder.append(line).append('\n');
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return gson.fromJson(stringBuilder.toString(), City[].class);
     }
 }

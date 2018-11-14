@@ -1,14 +1,11 @@
 package com.dmitrytyunkov.simpleweather.ui;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.constraint.ConstraintLayout;
@@ -18,14 +15,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,23 +28,29 @@ import android.widget.Toast;
 import com.dmitrytyunkov.simpleweather.R;
 import com.dmitrytyunkov.simpleweather.location.CurrentLoccation;
 import com.dmitrytyunkov.simpleweather.model.BaseWeatherModel;
+import com.dmitrytyunkov.simpleweather.model.City;
 import com.dmitrytyunkov.simpleweather.network.openweathermap.NetworkOpenweathermapBuilder;
 import com.dmitrytyunkov.simpleweather.network.openweathermap.OpenweathermapService;
 import com.dmitrytyunkov.simpleweather.presenter.WeatherPresenter;
 import com.dmitrytyunkov.simpleweather.view.WeatherView;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import butterknife.OnTouch;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity implements WeatherView {
+public class MainActivity extends AppCompatActivity implements WeatherView  {
 
     @BindView(R.id.text_view_chance_of_precipitation_value)
     TextView textViewChanceOfPrecipitation;
@@ -76,12 +77,16 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     private Double latitude = 91.00;
     private String lang = "en";
     private String appid = "2848389bb79b98268b336c39d6eea8c7";
+    City[] cities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
+
+        WeatherPresenter weatherPresenter = new WeatherPresenter(this, null);
+        cities = weatherPresenter.readCities(this.getResources());
 
         String str = getString(R.string.no_value) + " " + getString(R.string.percent);
         textViewChanceOfPrecipitation.setText(str);
@@ -214,8 +219,6 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
     @OnClick(R.id.text_view_change_city)
     public void onClickChangeCity(View view) {
-        String[] cities = {"Omsk,ru", "Novosibirsk,ru", "New York,us"};
-
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View layout = layoutInflater.inflate(R.layout.popup_select_cities, null);
 
@@ -249,6 +252,16 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
                 checkWeatherByCityName();
             }
         });
+    }
+
+    @OnClick(R.id.text_view_temperature)
+    public void onClickTemperature(View view) {
+        if (longitude > 180 || latitude > 90) {
+            checkWeatherByCityName();
+        }
+        else {
+            checkWeatherByCoord();
+        }
     }
 
     public void checkWeatherByCityName() {
