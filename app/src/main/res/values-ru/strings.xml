@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Simple Weather</string>
-    <string name="city">Омск</string>
+    <string name="city">Выберите город</string>
     <string name="unit_degree_metric">C</string>
     <string name="unit_degree_imperial">F</string>
     <string name="change_city">Сменить город</string>

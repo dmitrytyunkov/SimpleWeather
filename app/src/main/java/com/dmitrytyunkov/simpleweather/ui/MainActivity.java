@@ -11,14 +11,22 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,15 +99,11 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
         if (Locale.getDefault().getLanguage().equals("ru"))
             lang = "ru";
-        NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
-        OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
-
-        WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
 
         if (longitude > 180 || latitude > 90)
-            weatherPresenter.checkWeather(city, lang, unit, appid);
+            checkWeatherByCityName();
         else
-            weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
+            checkWeatherByCoord();
     }
 
     @Override
@@ -168,12 +172,10 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     public void returnLocation(Location location) {
         Log.d("LOCATION", location.getLongitude() + " "
                 + location.getLatitude());
+        longitude = location.getLongitude();
+        latitude = location.getLatitude();
 
-        NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
-        OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
-
-        WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-        weatherPresenter.checkWeather(location.getLongitude(), location.getLatitude(), lang, unit, appid);
+        checkWeatherByCoord();
     }
 
     @Override
@@ -191,23 +193,14 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
             unit = "imperial";
-            NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
-            OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
-
-            WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-            weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
         } else {
             unit = "metric";
-            NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
-            OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
-
-            WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-            weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
         }
+        checkWeatherByCoord();
     }
 
     @OnClick(R.id.text_view_my_location)
-    public void onClick() {
+    public void onClickMyLocation(View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -219,5 +212,58 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         CurrentLoccation.getLocation(locationManager, this);
     }
 
+    @OnClick(R.id.text_view_change_city)
+    public void onClickChangeCity(View view) {
+        String[] cities = {"Omsk,ru", "Novosibirsk,ru", "New York,us"};
 
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View layout = layoutInflater.inflate(R.layout.popup_select_cities, null);
+
+        final PopupWindow popupWindow = new PopupWindow(layout,
+                ConstraintLayout.LayoutParams.MATCH_PARENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                true);
+
+        ((AutoCompleteTextView) layout.findViewById(R.id.auto_complete_text_view))
+                .setAdapter(new ArrayAdapter<>(getApplicationContext(),
+                        android.R.layout.simple_dropdown_item_1line, cities));
+
+        ((AutoCompleteTextView) layout.findViewById(R.id.auto_complete_text_view)).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                city = ((AutoCompleteTextView) layout.findViewById(R.id.auto_complete_text_view)).getText().toString();
+                popupWindow.dismiss();
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            popupWindow.showAsDropDown(layout, 0, 0, Gravity.NO_GRAVITY);
+        }
+        else {
+            popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, 0, 0);
+        }
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                checkWeatherByCityName();
+            }
+        });
+    }
+
+    public void checkWeatherByCityName() {
+        NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
+        OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
+
+        WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
+        weatherPresenter.checkWeather(city, lang, unit, appid);
+    }
+
+    public void checkWeatherByCoord() {
+        NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
+        OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
+
+        WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
+        weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
+    }
 }
