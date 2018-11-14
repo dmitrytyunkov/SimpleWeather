@@ -1,25 +1,44 @@
-     package com.dmitrytyunkov.simpleweather.ui;
+package com.dmitrytyunkov.simpleweather.ui;
 
+import android.Manifest;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dmitrytyunkov.simpleweather.R;
+import com.dmitrytyunkov.simpleweather.location.CurrentLoccation;
 import com.dmitrytyunkov.simpleweather.model.BaseWeatherModel;
 import com.dmitrytyunkov.simpleweather.network.openweathermap.NetworkOpenweathermapBuilder;
 import com.dmitrytyunkov.simpleweather.network.openweathermap.OpenweathermapService;
 import com.dmitrytyunkov.simpleweather.presenter.WeatherPresenter;
 import com.dmitrytyunkov.simpleweather.view.WeatherView;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnTouch;
 import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity implements WeatherView {
@@ -92,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         str = String.valueOf(Math.round(baseWeatherModel.getMain().getPressure() * perssureKoef))
                 + " " + getString(R.string.unit_pressure);
         textViewPressure.setText(str);
-        if(unit.equals("metric"))
+        if (unit.equals("metric"))
             str = baseWeatherModel.getWind().getSpeed().toString() + " "
                     + getString(R.string.unit_speed_metric) + ", ";
         else
@@ -103,17 +122,17 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
             str += getString(R.string.north);
         else if (windDeg < 67.5)
             str += getString(R.string.northeast);
-        else if(windDeg < 112.5)
+        else if (windDeg < 112.5)
             str += getString(R.string.east);
-        else if(windDeg < 157.5)
+        else if (windDeg < 157.5)
             str += getString(R.string.southeast);
-        else if(windDeg < 202.5)
+        else if (windDeg < 202.5)
             str += getString(R.string.south);
-        else if(windDeg < 247.5)
+        else if (windDeg < 247.5)
             str += getString(R.string.southwest);
-        else if(windDeg < 292.5)
+        else if (windDeg < 292.5)
             str += getString(R.string.west);
-        else if(windDeg < 337.5)
+        else if (windDeg < 337.5)
             str += getString(R.string.northwest);
         textViewWind.setText(str);
         str = String.valueOf(Math.round(baseWeatherModel.getMain().getTemp()));
@@ -137,6 +156,20 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     }
 
     @Override
+    public void returnLocation(Location location) {
+        Log.d("LOCATION", location.getLongitude() + " "
+                + location.getLatitude());
+        Toast.makeText(this, location.getLongitude() + " "
+                + location.getLatitude(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void returnLocationError(String error) {
+        Log.d("LOCATION", error);
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void returnWeatherError(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
@@ -150,8 +183,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
             WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
             weatherPresenter.checkWeather(city, lang, unit, appid);
-        }
-        else {
+        } else {
             unit = "metric";
             NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
             OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
@@ -160,4 +192,18 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
             weatherPresenter.checkWeather(city, lang, unit, appid);
         }
     }
+
+    @OnClick(R.id.text_view_my_location)
+    public void onClick() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            String[] permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions, 1);
+            }
+        }
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        CurrentLoccation.getLocation(locationManager, this);
+    }
+
+
 }
