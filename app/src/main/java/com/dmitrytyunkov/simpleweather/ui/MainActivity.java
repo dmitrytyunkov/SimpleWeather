@@ -3,15 +3,14 @@ package com.dmitrytyunkov.simpleweather.ui;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,15 +32,7 @@ import com.dmitrytyunkov.simpleweather.network.openweathermap.NetworkOpenweather
 import com.dmitrytyunkov.simpleweather.network.openweathermap.OpenweathermapService;
 import com.dmitrytyunkov.simpleweather.presenter.WeatherPresenter;
 import com.dmitrytyunkov.simpleweather.view.WeatherView;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.stream.JsonReader;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -50,7 +41,7 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity implements WeatherView  {
+public class MainActivity extends AppCompatActivity implements WeatherView {
 
     @BindView(R.id.text_view_chance_of_precipitation_value)
     TextView textViewChanceOfPrecipitation;
@@ -68,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements WeatherView  {
     TextView textViewWeatherStatus;
     @BindView(R.id.image_view_weather)
     ImageView imageViewWeather;
+    City[] cities;
     private Unbinder unbinder;
-
     private Double perssureKoef = 0.750062;
     private String unit = "metric";
     private String city = "Omsk,RU";
@@ -77,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements WeatherView  {
     private Double latitude = 91.00;
     private String lang = "en";
     private String appid = "2848389bb79b98268b336c39d6eea8c7";
-    City[] cities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,12 +176,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView  {
     @Override
     public void returnLocationError(String error) {
         Log.d("LOCATION", error);
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void returnWeatherError(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
     @OnCheckedChanged(R.id.toggle_button_unit)
@@ -241,8 +231,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView  {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             popupWindow.showAsDropDown(layout, 0, 0, Gravity.NO_GRAVITY);
-        }
-        else {
+        } else {
             popupWindow.showAtLocation(layout, Gravity.NO_GRAVITY, 0, 0);
         }
 
@@ -258,8 +247,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView  {
     public void onClickTemperature(View view) {
         if (longitude > 180 || latitude > 90) {
             checkWeatherByCityName();
-        }
-        else {
+        } else {
             checkWeatherByCoord();
         }
     }

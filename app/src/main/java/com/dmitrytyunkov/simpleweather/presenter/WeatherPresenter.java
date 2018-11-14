@@ -1,7 +1,6 @@
 package com.dmitrytyunkov.simpleweather.presenter;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
@@ -38,8 +37,7 @@ public class WeatherPresenter {
                 if (response.code() != 200) {
                     Log.d("REQUEST ERROR", response.code() + ' ' + response.message());
                     weatherView.returnWeatherError(response.code() + ' ' + response.message());
-                }
-                else {
+                } else {
                     Log.d("REQUEST OK", response.body().toString());
                     weatherView.returnWeather(response.body());
                 }
@@ -60,8 +58,7 @@ public class WeatherPresenter {
                 if (response.code() != 200) {
                     Log.d("REQUEST ERROR", response.code() + ' ' + response.message());
                     weatherView.returnWeatherError(response.code() + ' ' + response.message());
-                }
-                else {
+                } else {
                     Log.d("REQUEST OK", response.body().toString());
                     weatherView.returnWeather(response.body());
                 }
@@ -103,8 +100,7 @@ public class WeatherPresenter {
             for (String line; (line = bufferedReader.readLine()) != null; ) {
                 stringBuilder.append(line).append('\n');
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return gson.fromJson(stringBuilder.toString(), City[].class);

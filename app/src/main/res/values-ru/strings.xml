@@ -30,4 +30,5 @@
     <string name="northwest">северо-западный</string>
     <string name="southeast">юго-восточный</string>
     <string name="southwest">юго-западный</string>
+    <string name="typing_city_name">Начните вводить название города</string>
 </resources>

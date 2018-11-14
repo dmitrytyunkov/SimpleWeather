@@ -30,4 +30,5 @@
     <string name="northwest">northwest</string>
     <string name="southeast">southeast</string>
     <string name="southwest">southwest</string>
+    <string name="typing_city_name">Start typing city name</string>
 </resources>
