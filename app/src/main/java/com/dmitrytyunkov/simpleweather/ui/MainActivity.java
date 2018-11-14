@@ -3,6 +3,7 @@
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.dmitrytyunkov.simpleweather.view.WeatherView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.Unbinder;
 
 public class MainActivity extends AppCompatActivity implements WeatherView {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     private Unbinder unbinder;
 
     private Double perssureKoef = 0.750062;
+    private String unit = "metric";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
         WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-        weatherPresenter.checkWeather();
+        weatherPresenter.checkWeather(unit);
     }
 
     @Override
@@ -81,8 +84,12 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         str = String.valueOf(Math.round(baseWeatherModel.getMain().getPressure() * perssureKoef))
                 + " " + getString(R.string.unit_pressure);
         textViewPressure.setText(str);
-        str = baseWeatherModel.getWind().getSpeed().toString() + " "
-                + getString(R.string.unit_speed_metric) + ", ";
+        if(unit.equals("metric"))
+            str = baseWeatherModel.getWind().getSpeed().toString() + " "
+                    + getString(R.string.unit_speed_metric) + ", ";
+        else
+            str = baseWeatherModel.getWind().getSpeed().toString() + " "
+                    + getString(R.string.unit_speed_imperial) + ", ";
         Integer windDeg = baseWeatherModel.getWind().getDeg();
         if (windDeg >= 337.5 || windDeg < 22.5)
             str += getString(R.string.north);
@@ -109,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         NetworkOpenweathermapBuilder.init("https://openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
         String imgUrl = "/img/w/" + baseWeatherModel.getWeather().get(0).getIcon() + ".png";
+
         WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
         weatherPresenter.downloadImg(imgUrl);
     }
@@ -123,4 +131,23 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
     }
 
+    @OnCheckedChanged(R.id.toggle_button_unit)
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            unit = "imperial";
+            NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
+            OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
+
+            WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
+            weatherPresenter.checkWeather(unit);
+        }
+        else {
+            unit = "metric";
+            NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
+            OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
+
+            WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
+            weatherPresenter.checkWeather(unit);
+        }
+    }
 }
