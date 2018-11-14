@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     private Double perssureKoef = 0.750062;
     private String unit = "metric";
     private String city = "Omsk,RU";
+    private Double longitude = 181.00;
+    private Double latitude = 91.00;
     private String lang = "en";
     private String appid = "2848389bb79b98268b336c39d6eea8c7";
 
@@ -89,12 +91,15 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
         if (Locale.getDefault().getLanguage().equals("ru"))
             lang = "ru";
-
         NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
         WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-        weatherPresenter.checkWeather(city, lang, unit, appid);
+
+        if (longitude > 180 || latitude > 90)
+            weatherPresenter.checkWeather(city, lang, unit, appid);
+        else
+            weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
     }
 
     @Override
@@ -105,6 +110,10 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
 
     @Override
     public void returnWeather(BaseWeatherModel baseWeatherModel) {
+        city = baseWeatherModel.getName() + "," + baseWeatherModel.getSys().getCountry();
+        longitude = baseWeatherModel.getCoord().getLon();
+        latitude = baseWeatherModel.getCoord().getLat();
+
         String str = String.valueOf(Math.round(baseWeatherModel.getMain().getHumidity()))
                 + " " + getString(R.string.percent);
         textViewHumidity.setText(str);
@@ -141,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
         textViewWeatherStatus.setText(str);
         str = baseWeatherModel.getName();
         textViewCity.setText(str);
-        city = baseWeatherModel.getName() + "," + baseWeatherModel.getSys().getCountry();
 
         NetworkOpenweathermapBuilder.init("https://openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
@@ -160,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
     public void returnLocation(Location location) {
         Log.d("LOCATION", location.getLongitude() + " "
                 + location.getLatitude());
-        
+
         NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
         OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
@@ -187,14 +195,14 @@ public class MainActivity extends AppCompatActivity implements WeatherView {
             OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
             WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-            weatherPresenter.checkWeather(city, lang, unit, appid);
+            weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
         } else {
             unit = "metric";
             NetworkOpenweathermapBuilder.init("http://api.openweathermap.org/");
             OpenweathermapService service = NetworkOpenweathermapBuilder.getOpenweathermapService();
 
             WeatherPresenter weatherPresenter = new WeatherPresenter(this, service);
-            weatherPresenter.checkWeather(city, lang, unit, appid);
+            weatherPresenter.checkWeather(longitude, latitude, lang, unit, appid);
         }
     }
 
